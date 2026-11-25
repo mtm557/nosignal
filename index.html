@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>No Signal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE work: a calm, exact reference people check before buying or modifying a car
+   IDEA the federal window sticker on every new car, re-issued as a privacy label
+   PICTURE the live label for the car you look up, plus a ruled brand-by-year strip chart
+   COLOUR stone ground, white label panels, black ink, brick red for "transmits"
+   TYPE Schibsted Grotesk throughout, heavy weight for verdicts
+   LAYOUT lookup form beside the label on a laptop; stacked title, label, form on a phone */
+:root{color-scheme:light dark;--bg:light-dark(#e7e4df,#171513);--panel:light-dark(#ffffff,#211e1b);--ink:light-dark(#111111,#ece8e2);--mute:light-dark(#57524c,#aaa39a);--rule:light-dark(#cdc8c0,#3b3631);--brick:light-dark(#c8371e,#e4573d);--dead:light-dark(#a8a299,#615b54);--tint:light-dark(#f3f1ed,#1c1917)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:clip}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--brick)}
+.band{padding-block:clamp(28px,4vw,56px);padding-inline:max(5vw,16px)}
+.wrap{max-width:1240px;margin:0 auto}
+h1{font-size:clamp(38px,6vw,52px);line-height:1.05;letter-spacing:-.02em;margin:0;font-weight:800}
+h2{font-size:clamp(26px,3.4vw,34px);line-height:1.1;letter-spacing:-.02em;margin:0 0 8px;font-weight:800;text-wrap:balance}
+h3{font-size:19px;margin:0 0 6px;line-height:1.25}
+p{margin:0 0 12px;max-width:68ch}
+.lede{font-size:18px;color:var(--mute);max-width:60ch;margin-top:10px}
+.top{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:16px 32px;border-bottom:2px solid var(--ink);padding-bottom:18px}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--rule)}
+nav{padding-inline:max(5vw,16px)}
+nav .wrap{display:flex;gap:4px 22px;overflow-x:auto;padding:12px 0;white-space:nowrap}
+nav a{text-decoration:none;font-weight:500;font-size:15px;padding:6px 0;flex:none}
+.tool{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:28px;align-items:start;margin-top:20px}
+.panel{background:var(--panel);border:1px solid var(--rule);padding:22px}
+label{display:block;font-weight:500;font-size:15px;margin:0 0 6px}
+select,input[type=text]{width:100%;font:inherit;font-size:16px;color:var(--ink);background:var(--panel);border:1.5px solid var(--ink);border-radius:0;padding:10px 12px;min-height:46px}
+select:focus,input:focus,button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--brick);outline-offset:2px}
+.f{margin-bottom:16px}
+.go{width:100%;min-height:48px;font:inherit;font-weight:700;font-size:17px;background:var(--ink);color:var(--bg);border:0;cursor:pointer}
+.go:hover{background:var(--brick);color:#fff}
+.ex{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.ex button{font:inherit;font-size:14px;background:transparent;color:var(--ink);border:1px solid var(--rule);padding:8px 10px;min-height:40px;cursor:pointer}
+.ex button:hover{border-color:var(--ink)}
+.small{font-size:14px;color:var(--mute)}
+.sticker{background:var(--panel);border:2px solid var(--ink)}
+.sh{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 20px;border-bottom:2px solid var(--ink);font-weight:700;font-size:15px}
+.verdict{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;padding:22px 20px;border-bottom:1px solid var(--rule)}
+.big{font-size:clamp(28px,4vw,40px);font-weight:800;line-height:1.05;letter-spacing:-.02em}
+.car{font-size:18px;font-weight:500;margin-top:6px}
+.glyph{width:64px;height:64px;border:2px solid var(--ink)}
+.row{display:grid;grid-template-columns:11em minmax(0,1fr);gap:16px;padding:13px 20px;border-bottom:1px solid var(--rule)}
+.row:last-child{border-bottom:0}
+.row>b{font-weight:700;font-size:15px}
+.row p{margin:0 0 6px}
+.row ul{margin:4px 0 0;padding-left:18px}
+.row li{margin-bottom:4px}
+.conf{display:inline-block;font-weight:700;font-size:14px;border:1.5px solid var(--ink);padding:1px 8px;margin-right:8px;white-space:nowrap}
+.s-Q{background:var(--panel);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.s-D{background:var(--dead)}
+.s-M{background:repeating-linear-gradient(135deg,var(--brick) 0 3px,transparent 3px 8px);box-shadow:inset 0 0 0 1.5px var(--brick)}
+.s-C{background:var(--brick)}
+.s-N{background:transparent}
+.key{display:flex;flex-wrap:wrap;gap:10px 22px;margin:16px 0 20px;font-size:15px}
+.key span{display:inline-flex;align-items:center;gap:8px}
+.key i{display:inline-block;width:22px;height:16px}
+.strips{background:var(--panel);border:1px solid var(--rule);padding:16px 18px 10px}
+.sr{display:grid;grid-template-columns:12rem repeat(20,minmax(0,1fr));gap:2px;align-items:center;margin-bottom:3px}
+.sr .n{font-weight:500;font-size:15px;padding-right:10px;line-height:1.2}
+.sr .c{height:26px;cursor:pointer}
+.sr .c:hover{outline:2px solid var(--ink);outline-offset:-1px}
+.ax{color:var(--mute);font-size:13px;margin-top:6px}
+.ax span{text-align:left;white-space:nowrap}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+table{width:100%;border-collapse:collapse;background:var(--panel)}
+th,td{text-align:left;vertical-align:top;padding:11px 12px;border-bottom:1px solid var(--rule);font-size:15px}
+th{font-weight:700;border-bottom:2px solid var(--ink)}
+td.nw{white-space:nowrap}
+.tag{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;font-weight:500}
+.tag i{display:inline-block;width:14px;height:14px}
+.finder{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:end;margin:18px 0 14px}
+.finder .f{margin:0;width:180px}
+.chk{display:flex;align-items:center;gap:10px;font-size:15px;min-height:46px}
+.chk input{width:22px;height:22px;accent-color:var(--brick)}
+.brands{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+details.bf{background:var(--panel);border:1px solid var(--rule)}
+details.bf summary{cursor:pointer;padding:16px 18px;list-style:none;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:start}
+details.bf summary::-webkit-details-marker{display:none}
+details.bf summary::after{content:"+";font-size:24px;line-height:1;font-weight:500;grid-row:1/3;grid-column:2}
+details.bf[open] summary::after{content:"–"}
+.bn{font-weight:800;font-size:19px}
+.bh{color:var(--mute);font-size:15px}
+.bb{padding:0 18px 18px;border-top:1px solid var(--rule)}
+.bb h4{font-size:15px;margin:16px 0 4px}
+.bb ul{margin:0;padding-left:18px}
+.bb li{margin-bottom:6px;font-size:15px}
+.mini{display:grid;grid-template-columns:repeat(20,minmax(0,1fr));gap:2px;margin-top:12px}
+.mini i{height:12px}
+.dark{background:var(--ink);color:var(--bg)}
+.dark .small,.dark .lede{color:color-mix(in srgb,var(--bg) 72%,var(--ink))}
+.dark a:hover{color:var(--bg)}
+.lose{display:grid;grid-template-columns:repeat(auto-fit,minmax(14em,1fr));gap:2px;margin-top:18px}
+.lose div{background:var(--panel);padding:16px}
+.lose b{display:block;margin-bottom:4px}
+.law{border-left:4px solid var(--brick);padding:4px 0 4px 18px;font-size:18px;max-width:62ch;margin:14px 0 18px}
+.lists{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.lists ul{padding-left:18px;margin:8px 0 0}
+.lists li{margin-bottom:8px}
+.src{columns:2;column-gap:32px;font-size:14px;padding-left:18px}
+.src li{margin-bottom:6px;break-inside:avoid}
+.scroll{overflow-x:auto}
+footer{border-top:2px solid var(--ink)}
+@media(max-width:900px){.tool{grid-template-columns:minmax(0,1fr)}.brands,.cols{grid-template-columns:minmax(0,1fr)}.lists{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){.sr{grid-template-columns:repeat(20,minmax(0,1fr))}.sr .n{grid-column:1/-1;margin-top:6px}.ax .e2{visibility:hidden}.row{grid-template-columns:minmax(0,1fr);gap:4px}.verdict{grid-template-columns:minmax(0,1fr)}.glyph{width:100%;height:14px}.src{columns:1}
+table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--rule)}.stack td{display:flow-root;border:0;padding:3px 0 3px 8em}.stack td::before{content:attr(data-l);float:left;width:7.5em;margin-left:-8em;font-weight:700}}
+@media(prefers-reduced-motion:no-preference){.sticker.fresh{animation:stamp .35s ease-out}@keyframes stamp{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}}
+</style>
+</head>
+<body>
+<header class="band" style="padding-bottom:0">
+  <div class="wrap top">
+    <div>
+      <h1>No Signal</h1>
+      <p class="lede" style="font-size:clamp(20px,2.4vw,24px);color:var(--ink);font-weight:500;line-height:1.3">Your car shouldn't report where you go.</p>
+      <p class="lede" style="margin-top:6px">Find out which cars phone home, which ones can't, and how to cut the line on the rest.</p>
+    </div>
+    <p class="small" style="margin:0">US market · researched November 2026</p>
+  </div>
+</header>
+<nav aria-label="Sections"><div class="wrap">
+  <a href="#years">Quiet years</a><a href="#lookup">Look up a car</a><a href="#brands">Brand files</a><a href="#disconnect">Disconnecting</a><a href="#warranty">Warranty</a><a href="#checklist">Checklist</a><a href="#sources">Sources</a>
+</div></nav>
+
+<main>
+<section class="band" id="years" style="background:var(--tint);padding-top:32px">
+  <div class="wrap">
+    <h2>Most makers fitted modems between 2014 and 2020</h2>
+    <p>Each strip is one brand's US lineup by model year. A brand-level square shows the most common case; individual models can differ, so use the lookup or the finder below for a specific car. Click any square to check it.</p>
+    <div class="key">
+      <span><i class="s-Q"></i>No built-in modem</span>
+      <span><i class="s-D"></i>No working modem (any fitted is on a shut-down network)</span>
+      <span><i class="s-M"></i>Depends on model or trim</span>
+      <span><i class="s-C"></i>Built-in modem</span>
+    </div>
+    <div class="scroll"><div class="strips" id="strips" style="min-width:340px"></div></div>
+
+    <h3 style="margin-top:36px">Find cars without a working modem</h3>
+    <div class="finder">
+      <div class="f"><label for="fy">Model year</label><select id="fy"></select></div>
+      <label class="chk" for="fd"><input type="checkbox" id="fd" checked> Include cars whose modem sits on a dead network</label>
+    </div>
+    <div class="scroll"><table class="stack" id="ft"><thead><tr><th>Brand</th><th>Models</th><th>Years</th><th>Status</th><th>Confidence</th></tr></thead><tbody></tbody></table></div>
+    <p class="small" style="margin-top:10px" id="fcount"></p>
+  </div>
+</section>
+
+<section class="band" id="lookup" style="padding-top:32px">
+  <div class="wrap">
+    <h2>Look up your car</h2>
+    <div class="tool">
+      <form class="panel" id="form" autocomplete="off">
+        <div class="f"><label for="make">Make</label><select id="make"></select></div>
+        <div class="f"><label for="model">Model</label><input type="text" id="model" list="models" placeholder="e.g. Camry"><datalist id="models"></datalist></div>
+        <div class="f"><label for="year">Model year</label><select id="year"></select></div>
+        <button class="go" type="submit">Print the label</button>
+        <p class="small" style="margin:14px 0 0">Try one:</p>
+        <div class="ex" id="ex"></div>
+      </form>
+      <article class="sticker" id="sticker" aria-live="polite"></article>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="brands">
+  <div class="wrap">
+    <h2>Brand files: what each maker has done with driver data</h2>
+    <p>Policies change, so these record documented actions: lawsuits, regulator orders, investigations and security disclosures, each linked to its source. In 2023, Mozilla reviewed 25 car brands and every one failed its privacy test, the first time a whole product category had.</p>
+    <div class="brands" id="bf"></div>
+  </div>
+</section>
+
+<section class="band dark" id="disconnect">
+  <div class="wrap">
+    <h2>Disconnecting: start with the reversible options</h2>
+    <p class="lede">Work down this list and stop at the first step that gives you what you want. Every method here can be undone.</p>
+    <div class="scroll" style="margin-top:18px"><table class="stack" style="color:var(--ink)">
+      <thead><tr><th>Method</th><th>Stops transmission</th><th>Hands-free mic</th><th>Warranty exposure</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td data-l="Method"><b>Opt out in settings, the app, or by asking the maker</b></td><td data-l="Stops">Partly. Data sharing stops; the modem may still connect.</td><td data-l="Mic">Keeps it</td><td data-l="Warranty">None</td><td data-l="Notes">Do this first on any car. Ford, Mazda and GM all offer documented opt-outs (see brand files). Decline connected-services enrolment at the dealer.</td></tr>
+        <tr><td data-l="Method"><b>Unplug the cellular and GPS antenna leads at the module</b></td><td data-l="Stops">Mostly</td><td data-l="Mic">Usually keeps it</td><td data-l="Warranty">Low</td><td data-l="Notes">Toyota owners report this keeps the mic and speakers working. Some fit 50-ohm terminators, since a module can sometimes pick up weak signal without its antenna.</td></tr>
+        <tr><td data-l="Method"><b>Pull the module's fuse</b></td><td data-l="Stops">Yes, once its backup battery drains</td><td data-l="Mic">Often lost</td><td data-l="Warranty">Low to moderate</td><td data-l="Notes">On 2020–23 Tacomas, owners report the DCM fuse kills the cabin microphone. Some modules carry an internal battery that keeps them alive for a while.</td></tr>
+        <tr><td data-l="Method"><b>Unplug or remove the module</b></td><td data-l="Stops">Yes</td><td data-l="Mic">Often lost; may lose a speaker</td><td data-l="Warranty">Moderate</td><td data-l="Notes">On some Toyotas, audio passes through the DCM, so unplugging it silences right-side speakers. Aftermarket bypass harnesses exist for some models. May set warning lights or fault codes.</td></tr>
+      </tbody>
+    </table></div>
+    <h3 style="margin-top:32px">What you give up when the modem goes</h3>
+    <div class="lose" style="color:var(--ink)">
+      <div><b>Automatic crash notification</b>The car can no longer call for help if you're unconscious after a crash. Keep a phone in reach, and consider a phone with crash detection.</div>
+      <div><b>The SOS button</b>Manual emergency calls through the overhead console stop working.</div>
+      <div><b>Over-the-air updates</b>Some recall fixes now arrive over the air. Check your VIN at nhtsa.gov/recalls a few times a year.</div>
+      <div><b>Stolen-vehicle tracking and app features</b>Remote start, lock and locate through the app stop. On some 2020+ Tacomas, owners report key-fob remote start stops too.</div>
+    </div>
+    <p class="small" style="margin-top:18px">Owner reports come from enthusiast forums and vary by model and year. Before working on any car's wiring, find a write-up for your exact model. In the EU, eCall emergency calling has been required on new car types since 31 March 2018, so check local rules before disabling it there.</p>
+  </div>
+</section>
+
+<section class="band" id="warranty">
+  <div class="wrap cols">
+    <div>
+      <h2>Your warranty survives the change</h2>
+      <p class="law">Under the federal Magnuson-Moss Warranty Act, a maker or dealer can't void your warranty just because you modified the car or used aftermarket parts. To deny a specific repair, they must show your change caused that failure, and the rest of the warranty stays in force.</p>
+      <p>Switching off connectivity in settings or the app is a feature the maker gives you, so it has no warranty effect at all.</p>
+      <p>Physical changes are where the risk sits, and it's narrow: if your hands-free mic or audio fails after you pulled a fuse or unplugged a module, expect that claim to be questioned. A transmission failure has nothing to do with a telematics fuse.</p>
+    </div>
+    <div class="panel">
+      <h3>Keep yourself covered</h3>
+      <ul style="padding-left:18px;margin:8px 0 0">
+        <li style="margin-bottom:8px">Prefer reversible steps: antenna leads and fuses over cutting wires.</li>
+        <li style="margin-bottom:8px">Keep the fuse or module, labelled, in the glovebox.</li>
+        <li style="margin-bottom:8px">Write down what you changed and when, with photos.</li>
+        <li style="margin-bottom:8px">If a claim is denied, ask for the reason in writing. The burden is on them to link it to your change.</li>
+        <li style="margin-bottom:8px">Lease? Your contract may require returning the car as delivered. Check before modifying.</li>
+      </ul>
+      <p class="small" style="margin:14px 0 0">This is general information about US federal law, not legal advice. State lemon laws and your warranty booklet may add terms.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="checklist" style="background:var(--tint)">
+  <div class="wrap">
+    <h2>Checking a car in person takes two minutes</h2>
+    <div class="lists" style="margin-top:16px">
+      <div><h3>Before you buy</h3><ul>
+        <li><b>Look up.</b> SOS, Assist or OnStar buttons on the mirror or overhead console almost always mean a modem.</li>
+        <li><b>Read the window sticker</b> for the brand's service name: FordPass Connect, OnStar, Safety Connect, HondaLink, Blue Link, Kia Connect, NissanConnect Services, Starlink Safety and Security, Mazda Connected Services, Uconnect or SiriusXM Guardian, Car-Net, ConnectedDrive.</li>
+        <li><b>Open the settings.</b> A connectivity, modem or data-sharing menu means hardware is there. On Fords, an "Onboard Modem Serial Number" entry means a modem that was never activated.</li>
+        <li><b>Ask the dealer</b> to check the VIN's build sheet for a telematics unit.</li>
+      </ul></div>
+      <div><h3>After you buy</h3><ul>
+        <li><b>Remove previous owners.</b> In the 2025 Subaru research, attackers could add themselves to a car's account without the owner being notified. Reset connectivity so old app accounts lose access (Ford: Connectivity Reset → Erase network data).</li>
+        <li><b>Opt out</b> of every data-sharing toggle, then decide on hardware steps.</li>
+        <li><b>Pair carefully.</b> Infotainment units store synced contacts and messages locally. Decline contact and message sync if you only need audio.</li>
+        <li><b>See what insurers hold.</b> You can request your consumer file from LexisNexis Risk Solutions, one of the brokers GM sold driving data to.</li>
+      </ul></div>
+      <div><h3>Before you sell</h3><ul>
+        <li>Factory-reset the infotainment system to clear phones, contacts, addresses and garage codes.</li>
+        <li>Remove the car from the maker's app and cancel any subscription.</li>
+        <li>Remember a car with no modem still keeps data on board: crash event recorders and infotainment logs can be read by anyone with physical access and the right tools.</li>
+      </ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="ahead">
+  <div class="wrap cols">
+    <div>
+      <h2>What's coming</h2>
+      <p>From model year 2027, a US Commerce Department rule bars connected-vehicle software tied to China or Russia, and from model year 2030 their connectivity hardware. It limits who builds the modem, not whether cars have one.</p>
+    </div>
+    <div>
+      <h3>How confident is each answer?</h3>
+      <p><span class="conf">High</span>From the maker's own documents: support pages, press releases or service bulletins filed with NHTSA.</p>
+      <p><span class="conf">Medium</span>From consistent reporting or partial official lists. Usually right; check trim.</p>
+      <p><span class="conf">Low</span>Our best reading where makers publish little. Confirm on the car itself.</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="band" id="sources">
+  <div class="wrap">
+    <h2>Sources</h2>
+    <p class="small">Every year range and incident on this page comes from one of these. Found an error or a model we're missing? Check it against the maker's window sticker or service bulletins, which beat any database including this one.</p>
+    <ol class="src" id="srcs"></ol>
+    <p class="small" style="margin-top:20px">No Signal covers the US market. Not legal advice. Brands not yet researched: Acura, Audi, Genesis, Infiniti, Jaguar, Land Rover, Lincoln, Mercedes-Benz, Mitsubishi, Porsche, Volvo.</p>
+  </div>
+</footer>
+
+<script>
+{
+const Y0=2008,Y1=2027;
+const SRC={
+moz:["Mozilla Foundation: every car brand reviewed flunks privacy test (2023)","https://www.mozillafoundation.org/en/blog/privacy-nightmare-on-wheels-every-car-brand-reviewed-by-mozilla-including-ford-volkswagen-and-toyota-flunks-privacy-test/"],
+ftc:["FTC finalizes order against GM and OnStar (Jan 2026)","https://ftc.gov/news-events/news/press-releases/2026/01/ftc-finalizes-order-settling-allegations-gm-onstar-collected-sold-geolocation-data-without-consumers"],
+wyd:["Sen. Wyden: automakers' sharing of driver data with brokers (Jul 2024)","https://www.wyden.senate.gov/news/press-releases/wyden-investigation-reveals-new-details-about-automakers-sharing-of-driver-information-with-data-brokers-wyden-and-markey-urge-ftc-to-crack-down-on-disclosures-of-americans-data-without-drivers-consent"],
+tx:["Texas Attorney General sues Allstate and Arity (Jan 2025)","https://www.texasattorneygeneral.gov/news/releases/attorney-general-ken-paxton-sues-allstate-and-arity-unlawfully-collecting-using-and-selling-over-45"],
+tx2:["Reuters via Yahoo: automakers named in Texas v. Allstate","https://finance.yahoo.com/news/texas-sues-allstate-over-data-170851283.html"],
+fmod:["Ford: is my vehicle equipped with a modem?","https://www.ford.com/support/how-tos/fordpass/fordpass-connect/is-my-vehicle-equipped-with-fordpass-connect/"],
+fset:["Ford: customer connectivity settings","https://ford.com/support/how-tos/fordpass/fordpass-connect/what-are-my-fordpass-customer-connectivity-settings"],
+fuk:["Ford UK: preventing FordPass Connect from using your data","https://www.ford.co.uk/support/how-tos/fordpass/fordpass-connect/can-i-prevent-fordpass-connect-from-using-my-data"],
+frst:["Ford: remove modem access for authorised users","https://www.ford.ca/support/how-tos/ford-technology/vehicle-modem/remove-authorized-users"],
+gm4g:["GM Authority: 2015 OnStar 4G LTE availability by model","https://gmauthority.com/blog/2014/10/which-chevy-buick-gmc-and-cadillac-vehicles-have-onstar-4g-lte-with-wi-fi-hotspot/"],
+gmcar:["Cars.com: GM makes OnStar 4G LTE hardware standard","https://www.cars.com/articles/gms-onstar-4g-lte-rolling-into-dealerships-1420663005478"],
+t3g:["Toyota: 3G network retirement FAQ","https://www.toyota.com/audio-multimedia/support/3G-faq"],
+tlte:["Toyota: 4G LTE on all new 2020-model-year Toyota and Lexus","https://pressroom.toyota.com/kddi-att-connect-toyota-lexus-vehicles/"],
+tdcm:["Toyota: DCM expansion from 2017 model changes","https://pressroom.toyota.com/toyota-connected-car-technology-accelerates/"],
+tleak:["TechCrunch: Toyota Japan exposed vehicle locations for a decade","https://techcrunch.com/2023/05/12/toyota-japan-exposed-millions-locations-videos/"],
+taco:["TacomaWorld owner reports: pulling the DCM fuse","https://www.tacomaworld.com/posts/30354004"],
+taco2:["TacomaWorld owner reports: antennas, speakers and the DCM","https://www.tacomaworld.com/posts/29682865"],
+prius:["PriusChat owner reports: DCM fuse and backup battery","https://www.priuschat.com/goto/post?id=3521684"],
+cr3g:["Consumer Reports: 3G shutdown and car safety features","https://www.consumerreports.org/cars/car-safety/3g-wireless-network-shutdown-impact-on-car-safety-a2215482633/"],
+honda3g:["CarPro: Honda models affected by 3G sunset","https://www.carpro.com/blog/the-end-of-3g-and-what-it-means-for-your-vehicle"],
+hacc:["Honda service bulletin 23-056: 2023 Accord telematics unit (all trims)","https://static.nhtsa.gov/odi/tsbs/2023/MC-10239504-0001.pdf"],
+hbl:["Wikipedia: Hyundai Blue Link (launch and 2G/3G end of support)","https://en.wikipedia.org/wiki/Hyundai_Blue_Link"],
+kia:["SecurityWeek: millions of Kia cars were vulnerable to remote hacking","https://www.securityweek.com/millions-of-kia-cars-were-vulnerable-to-remote-hacking-researchers/"],
+kia2:["SC World: Kia flaw spanned model years 2014–2025","https://scworld.com/news/researchers-hacked-kia-cars-armed-with-only-license-plate-numbers"],
+n3g:["KSDK / Consumer Reports: Nissan models that lost NissanConnect","https://ksdk.com/article/money/consumer/list-car-losing-features-3g-call-first-responders/63-7b61817a-7df2-4082-95b1-542e2dc171e5"],
+leaf:["Troy Hunt: controlling vehicle features of Nissan LEAFs (2016)","https://www.troyhunt.com/controlling-vehicle-features-of-nissan/"],
+sub16:["Subaru: what's new for 2016 (Starlink Safety and Security debuts)","https://media.subaru.com/pressrelease/837/1/what%E2%80%99s-new-2016"],
+sub3g:["The Drive: AT&T 3G shutdown, affected Subaru models","https://www.thedrive.com/news/44353/att-3g-shutdown-today-will-kill-connected-features-for-millions-of-cars"],
+subh:["Sam Curry: hacking Subaru's Starlink admin panel (2025)","https://samcurry.net/hacking-subaru"],
+mz:["Mazda service bulletin: Connected Services models and years","https://static.nhtsa.gov/odi/tsbs/2024/MC-11008579-0001.pdf"],
+mzo:["Mazda service bulletin: deactivation (opt-out) mode","https://static.nhtsa.gov/odi/tsbs/2024/MC-11008573-0001.pdf"],
+jeep:["Computerworld: Chrysler recalls 1.4M vehicles after Jeep hack (2015)","https://www.computerworld.com/article/2952186/chrysler-recalls-14m-vehicles-after-jeep-hack.html"],
+vw14:["Work Truck: VW Car-Net launches on select 2014 models","https://www.worktruckonline.com/news/volkswagen-launches-in-car-assistance-suite-on-select-2014-models"],
+vwtsb:["VW technical bulletin: 2014 Car-Net applicability and 3G","https://static.nhtsa.gov/odi/tsbs/2014/MC-10239576-9999.pdf"],
+cariad:["Electrek: VW Cariad leak exposed 800,000 EV drivers (2024)","https://electrek.co/2024/12/30/massive-data-leak-at-volkswagen-exposes-800000-ev-drivers/"],
+bmw:["Korea Herald / Bloomberg: BMW ConnectedDrive flaw, cars built 2010–2014","https://m.koreaherald.com/article/360112"],
+bmw3g:["CNBC: BMW 3G vehicles disconnected from ConnectedDrive","https://www.cnbc.com/2022/01/16/3g-networks-shutting-down-in-2022-could-affect-your-cars-gps.html"],
+tes:["NBC News / Reuters: Tesla workers shared images from customer cars (2023)","https://www.nbcnews.com/business/business-news/tesla-workers-shared-sensitive-images-recorded-by-customer-cars-rcna78502"],
+tes3g:["The Drive: 3G shutdown, Tesla Model S before June 2015","https://www.thedrive.com/tech/43187/how-the-3g-shutdown-in-2022-could-screw-your-car"],
+mm:["FTC: auto warranties, routine maintenance and repairs","https://www.ftc.gov/node/46893"],
+mm2:["FTC: companies' warranty restrictions were illegal (2022)","https://consumer.ftc.gov/consumer-alerts/2022/07/ftc-says-companies-warranty-restrictions-were-illegal"],
+bis:["US Commerce (BIS): connected vehicles rule","https://www.bis.gov/connected-vehicles"],
+ecall:["EU Regulation 2015/758 on eCall","https://eur-lex.europa.eu/eli/reg/2015/758/oj/eng"]
+};
+const ST={Q:"No built-in modem",D:"No working modem",M:"Depends on model or trim",C:"Built-in modem",N:"Not yet researched"};
+const MEAN={
+Q:"The car has no cellular link of its own. It still stores data on board (crash event recorder, infotainment logs, anything your phone syncs) and can send data through a phone you connect with CarPlay, Android Auto or a maker's app.",
+D:"A telematics module may be fitted, but the 2G or 3G network it was built for is gone, so it can't connect. The module, GPS and microphone wiring are still in the car. Treat any upgrade a dealer offers as reconnecting it.",
+M:"Some versions of this car have a modem and some don't, usually decided by trim or package. Use the signs below to check the actual car.",
+C:"A cellular modem is built in. It can report location and driving data even if you never sign up for the app, on some brands until you switch it off.",
+N:"We haven't researched this make yet."};
+const WAR={Q:"Nothing to remove.",D:"Low stakes: the module can't connect anyway. If you remove it, check first that it isn't wired into your audio or microphone.",M:"Opting out in settings has no warranty effect. For physical changes, the maker must show your change caused a failure to deny that repair.",C:"Opting out in settings has no warranty effect. For physical changes, the maker must show your change caused a failure to deny that repair.",N:"Opting out has no warranty effect; see the warranty section."};
+const CONF={H:"High",M:"Medium",L:"Low"};
+const CN={H:"From the maker's own documents.",M:"From consistent reporting or partial official lists.",L:"Our best reading; confirm on the car."};
+const FT="On Ford's list of models eligible for a modem this year. It was optional, so check the car: Settings → Vehicle, or “FordPass Connect” / “SYNC Connect” on the window sticker.";
+const N3="Lost NissanConnect permanently when AT&T shut down 3G on 22 February 2022. Nissan offered no upgrade.";
+const TS="On Toyota's Safety Connect list. That 3G service stopped on 1 November 2022 and Toyota offers no retrofit. Safety Connect varied by trim, so the module may or may not be fitted.";
+const MZ="Mazda's service bulletins list this model and year with a telematics unit on every trim. Mazda has a built-in opt-out; once deactivated, many models show “Connected Services Disabled” at start-up.";
+const JR="If it has the 8.4-inch Uconnect touchscreen, it was in the 2015 hacking recall. That modem ran on Sprint 3G, which has shut down. Smaller radios had no modem.";
+const GM15="Not on GM's 2015 OnStar 4G LTE list (it arrived later). Any OnStar fitted used an older network that has since shut down.";
+const B=[
+{id:"mazda",name:"Mazda",makes:["Mazda"],head:"Clear model-by-model records; named in Texas v. Allstate",term:"Mazda Connected Services",
+strip:[[1996,2018,"Q","No Mazda had a built-in modem before the 2019 Mazda3.","H"],[2019,2023,"M","Connected Services arrived model by model: Mazda3 2019, CX-30 2020, CX-5 and CX-9 2021, MX-30 2022, CX-50 2023.","H",["Q","Not on Mazda's Connected Services list for this year."]],[2024,2027,"C","Every Mazda sold in the US now has a modem: MX-5 and CX-90 from 2024, CX-70 from 2025.","H"]],
+models:{"Mazda3":{a:["mazda 3","3"],r:[[2019,2027,"C",MZ]]},"CX-30":{r:[[2020,2027,"C",MZ]]},"CX-5":{r:[[2021,2027,"C",MZ]]},"CX-9":{r:[[2021,2023,"C",MZ]]},"MX-30":{r:[[2022,2023,"C",MZ]]},"CX-50":{r:[[2023,2027,"C",MZ]]},"MX-5 Miata":{a:["mx 5","mx5","miata"],r:[[2024,2027,"C",MZ]]},"CX-90":{r:[[2024,2027,"C",MZ]]},"CX-70":{r:[[2025,2027,"C",MZ]]},"Mazda6":{a:["mazda 6","6"]},"CX-3":{},"Mazda2":{a:["mazda 2"]},"Mazda5":{a:["mazda 5"]},"CX-7":{},"Tribute":{},"RX-8":{}},
+priv:["Texas's 2025 lawsuit against Allstate alleges the insurer bought driving data directly from Mazda, among other makers. The case is ongoing.","Mazda's connected cars have a documented opt-out: dealers' service bulletins describe a customer “deactivation mode”."],
+sec:[],cut:["Ask Mazda or the dealer to put the car in Connected Services deactivation mode; the car then reports connected services as disabled at start-up.","Mazdas built before their model's connected year (see the strip) have nothing to remove."],src:["mz","mzo","tx2"]},
+{id:"honda",name:"Honda",makes:["Honda"],head:"Sold 97,000 drivers' data to Verisk for 26 cents a car",term:"HondaLink",
+strip:[[1996,2017,"Q","No built-in telematics unit before 2018; earlier HondaLink ran through your phone.","M"],[2018,2022,"M","A telematics unit came only on top trims (Touring, Elite, Black Edition) of some models.","M"],[2023,2027,"M","Spreading quickly and set by model and trim. Every 2023-and-later Accord has one.","M"]],
+models:{"Accord":{r:[[2018,2020,"M","Only the Touring trim has a telematics unit. Honda pushed an over-the-air update when 3G shut down."],[2023,2027,"C","Every 2023-and-later Accord has a telematics control unit, per Honda's service bulletins."]]},"Odyssey":{r:[[2018,2020,"M","Touring and Elite trims have a telematics unit; Honda offered an update for the 3G shutdown."]]},"Insight":{r:[[2019,2020,"M","Touring trim has a telematics unit."]]},"Passport":{r:[[2019,2021,"M","Touring and Elite trims have a telematics unit."]]},"Pilot":{r:[[2019,2022,"M","Touring, Elite and Black Edition trims have a telematics unit."]]},"Prologue":{r:[[2024,2027,"C","Built on a GM platform with “HondaLink Connected by OnStar”."]]},"Civic":{},"CR-V":{a:["crv"]},"HR-V":{a:["hrv"]},"Fit":{},"Ridgeline":{},"Element":{},"Crosstour":{}},
+priv:["From 2020 to 2024, Honda shared data from 97,000 cars with the broker Verisk, which paid Honda $25,920, about 26 cents a car. Senators Wyden and Markey said the enrolment screens obscured that drivers' data was going to Verisk."],
+sec:[],cut:["Decline HondaLink enrolment and turn off data sharing in the app and head unit.","For hardware steps, find a write-up for your exact model; Honda wires the telematics unit differently across models."],src:["wyd","honda3g","hacc"]},
+{id:"ford",name:"Ford",makes:["Ford"],head:"Best-documented modem history; detailed in-car privacy toggles",term:"FordPass Connect or SYNC Connect",
+strip:[[1996,2016,"Q","Ford says no vehicle modem was available for 2016 and earlier model years. SYNC uses your paired phone instead.","H"],[2017,2019,"M","A modem was optional on a short list of models each year.","H",["Q","Not on Ford's list of modem-eligible models for this year."]],[2020,2027,"C","Ford says a modem is available on every 2020-and-later vehicle, optional on some trims.","H"]],
+models:{"EcoSport":{r:[[2018,2019,"M",FT]]},"Edge":{r:[[2019,2019,"M",FT]]},"Escape":{r:[[2017,2019,"M",FT]]},"Expedition":{r:[[2018,2019,"M",FT]]},"Explorer":{r:[[2018,2019,"M",FT]]},"F-150":{a:["f150","f 150"],r:[[2017,2019,"M",FT]]},"Fusion":{r:[[2017,2019,"M",FT]]},"Fusion Energi":{r:[[2017,2017,"Q","Ford lists the 2017 Fusion and Fusion Hybrid as modem-eligible, but not the Energi."]]},"Mustang":{r:[[2018,2019,"M",FT]]},"Mustang Mach-E":{a:["mach e","mache"]},"Ranger":{r:[[2019,2019,"M",FT]]},"Super Duty":{a:["f 250","f250","f 350","f350","f 450","f450"],r:[[2019,2019,"M",FT]]},"Transit Connect":{r:[[2019,2019,"M",FT]]},"GT":{r:[[2017,2017,"M",FT]]},"Bronco":{},"Bronco Sport":{},"Fiesta":{},"Flex":{},"Focus":{},"Maverick":{},"Taurus":{},"Transit":{}},
+priv:["Ford's in-car Connectivity Settings let you switch off the modem or each sharing category separately (vehicle data, location, driving data, analytics, speech feedback on SYNC 4). Ford says the modem keeps sending vehicle data unless you disable it or change those settings."],
+sec:[],cut:["SYNC 3 and 4: Settings → FordPass Connect → Connectivity Settings, then switch features off.","Bought used? Run a Connectivity Reset (Digital Experience: Apps → Settings → System → Reset Options → Connectivity Reset → Erase network data) so earlier owners' apps lose access."],src:["fmod","fset","fuk","frst"]},
+{id:"subaru",name:"Subaru",makes:["Subaru"],head:"2025 flaw exposed a year of location history",term:"Starlink Safety and Security",
+strip:[[1996,2015,"Q","Starlink Safety and Security debuted for 2016; earlier Subarus have no telematics unit.","H"],[2016,2018,"D","Fitted on select trims. These units used 3G, now shut down; Subaru offered an upgrade only to owners with an active subscription.","M"],[2019,2027,"M","Starlink Safety and Security is fitted on many trims; look for SOS and i buttons above the mirror.","L"]],
+models:{"Crosstrek":{r:[[2016,2018,"D","On the published list of Subarus that lost Starlink in the 3G shutdown (if fitted)."]]},"Forester":{r:[[2016,2018,"D","On the published list of Subarus that lost Starlink in the 3G shutdown (if fitted)."]]},"Legacy":{r:[[2016,2018,"D","On the published list of Subarus that lost Starlink in the 3G shutdown (if fitted)."]]},"Impreza":{r:[[2016,2018,"D","On the published list of Subarus that lost Starlink in the 3G shutdown (if fitted)."]]},"Outback":{},"WRX":{},"BRZ":{},"Ascent":{},"Solterra":{}},
+priv:["Mozilla's 2023 review flagged that Subaru treats passengers who ride in a connected Subaru as agreeing to its data practices."],
+sec:["Nov 2024, disclosed Jan 2025: researchers took over a Subaru employee account on the Starlink admin panel. With only a last name and ZIP code, email, phone number or plate, they could unlock, start and locate cars and pull a year of location history. Subaru patched it within 24 hours."],
+cut:["Cancel Starlink and ask Subaru to deactivate the unit. On a used Subaru, check the account for users you don't recognise.","For hardware steps, find a write-up for your exact model and year."],src:["sub16","sub3g","subh","moz"]},
+{id:"toyota",name:"Toyota",makes:["Toyota"],head:"Every 2020+ Toyota is connected; named in Texas v. Allstate",term:"Safety Connect, Toyota Connected Services or DCM",
+strip:[[1996,2009,"Q","We found no factory built-in modem in US Toyotas of this era.","M"],[2010,2017,"D","Models on Toyota's Safety Connect list had a 3G modem that stopped working on 1 November 2022, with no retrofit. Other Toyotas of these years had none.","H",["Q","Not on Toyota's Safety Connect list, so no built-in modem was fitted."]],[2018,2019,"M","Toyota added a Data Communication Module (DCM) with model changes from 2017; it depends on the model in these years.","M"],[2020,2027,"C","Toyota says every new 2020-model-year Toyota and Lexus got a 4G LTE modem.","H"]],
+models:{"Sienna":{r:[[2011,2017,"D",TS]]},"Prius v":{r:[[2012,2016,"D",TS]]},"Prius Plug-in":{a:["prius plugin"],r:[[2012,2015,"D",TS]]},"Prius":{r:[[2010,2016,"D",TS]]},"Prius c":{},"Prius Prime":{},"Avalon":{r:[[2013,2018,"D",TS]]},"RAV4 EV":{r:[[2012,2014,"D",TS]]},"RAV4":{a:["rav 4"]},"Camry":{r:[[2013,2017,"D",TS]]},"Mirai":{r:[[2016,2017,"D",TS]]},"Highlander":{r:[[2014,2018,"D",TS]]},"Land Cruiser":{r:[[2011,2017,"D",TS]]},"4Runner":{a:["4 runner"],r:[[2010,2019,"D",TS]]},"Corolla":{},"Tacoma":{},"Tundra":{},"Yaris":{},"Sequoia":{},"Venza":{},"C-HR":{a:["chr"]},"FJ Cruiser":{},"Matrix":{},"86":{a:["gr86","gr 86"]},"Supra":{},"bZ4X":{}},
+priv:["Texas's 2025 lawsuit against Allstate alleges the insurer bought driving data directly from Toyota and Lexus. The case is ongoing.","Toyota reached no retrofit deal for 3G-era cars, so Safety Connect models from 2010–2019 can no longer transmit."],
+sec:["May 2023: a cloud misconfiguration left location data for about 2.15 million Toyota and Lexus customers in Japan exposed from November 2013 to April 2023, possibly with drive-recorder video. Toyota said it was limited to Japan."],
+cut:["The DCM sits on its own fuse, labelled DCM; its location varies by model. Owners of 2020–23 Tacomas report pulling it kills the cabin mic for Bluetooth calls.","On some models, unplugging the module also cuts the right-side speakers, because audio runs through it. Unplugging only the antenna leads keeps the mic and speakers, and bypass harnesses exist for some trucks.","The DCM has an internal backup battery; it can take a while to die after the fuse is pulled."],src:["t3g","tdcm","tlte","tleak","tx2","taco","taco2","prius"]},
+{id:"lexus",name:"Lexus",makes:["Lexus"],head:"Shares Toyota's 2020 switch and data record",term:"Lexus Enform or Safety Connect",
+strip:[[1996,2009,"D","Some models had early telematics; every US 2G and 3G network has since shut down, so any such unit is offline.","L"],[2010,2018,"D","Most connected Lexus models of these years used 3G, now shut down, and Toyota offered no retrofit.","M"],[2019,2019,"M","Transition year; check for an SOS button overhead.","L"],[2020,2027,"C","Toyota says every new 2020-model-year Lexus got a 4G LTE modem.","H"]],
+models:{"RX":{},"ES":{},"NX":{},"IS":{},"GX":{},"LX":{},"UX":{},"RC":{},"LS":{},"GS":{},"CT":{},"TX":{}},
+priv:["Named alongside Toyota in Texas's lawsuit alleging Allstate bought driving data from automakers.","Included in Toyota's 2023 Japan cloud exposure."],sec:[],cut:["Same DCM approach as Toyota; see the Toyota file."],src:["tlte","tx2","cr3g"]},
+{id:"nissan",name:"Nissan",makes:["Nissan"],head:"Mozilla's second-worst; 2016 Leaf app needed only a VIN",term:"NissanConnect Services",
+strip:[[1996,2010,"Q","No built-in telematics found.","M"],[2011,2015,"Q","No built-in telematics found except early Leafs, whose 3G modems are now offline.","M"],[2016,2018,"M","Several models had 3G modems that went dark in 2022; check your model.","M"],[2019,2027,"M","NissanConnect Services telematics is fitted on many trims; look for an SOS button.","L"]],
+models:{"Leaf":{r:[[2011,2015,"D","Some 2011–2015 Leafs lost NissanConnect permanently in the 3G shutdown."]]},"Altima":{r:[[2016,2017,"D",N3]]},"GT-R":{a:["gtr"],r:[[2017,2018,"D",N3]]},"Maxima":{r:[[2016,2017,"D",N3]]},"Murano":{r:[[2017,2017,"D",N3]]},"Pathfinder":{r:[[2017,2017,"D",N3]]},"Rogue Sport":{r:[[2017,2018,"D",N3]]},"Rogue":{r:[[2016,2017,"D",N3]]},"Sentra":{},"Versa":{},"Frontier":{},"Titan":{},"Armada":{},"Kicks":{},"Ariya":{},"370Z":{},"Z":{},"Juke":{},"Xterra":{},"Quest":{}},
+priv:["Mozilla ranked Nissan second-to-last of 25 brands in 2023. Its privacy policy listed categories including “sexual activity” and genetic information; Nissan said it doesn't knowingly collect such data."],
+sec:["Feb 2016: Nissan's Leaf app API accepted commands using only the car's VIN, letting anyone read trip history and switch the climate control on any Leaf. Nissan took the app offline."],
+cut:["Decline NissanConnect enrolment and switch off data sharing in the head unit.","For hardware steps, find a write-up for your exact model."],src:["moz","n3g","leaf"]},
+{id:"hyundai",name:"Hyundai",makes:["Hyundai"],head:"Auto-enrolled 1.7 million cars in a data-sharing program",term:"Blue Link",
+strip:[[1996,2011,"Q","Blue Link debuted on 2012 models.","H"],[2012,2018,"D","Blue Link was fitted to many models from 2012; Hyundai ended support for 2012–2018 cars when 2G and 3G shut down.","M"],[2019,2027,"C","Blue Link is fitted on most models; some base trims lack it.","L"]],
+models:{"Sonata":{},"Elantra":{},"Tucson":{},"Santa Fe":{},"Kona":{},"Palisade":{},"Veloster":{},"Accent":{},"Venue":{},"Ioniq 5":{},"Ioniq 6":{},"Ioniq":{},"Santa Cruz":{}},
+priv:["From 2018 to 2024, Hyundai shared data from 1.7 million cars with Verisk, which paid $1,043,315.69, about 61 cents a car. According to the senators' letter, drivers who switched on connectivity were enrolled in a driving-score program without being told."],
+sec:[],cut:["Cancel Blue Link and ask Hyundai to deactivate the unit; switch off data sharing in the head unit.","For hardware steps, find a write-up for your exact model."],src:["wyd","hbl"]},
+{id:"stell",name:"Jeep, Ram, Dodge, Chrysler",makes:["Jeep","Ram","Dodge","Chrysler","Fiat"],head:"The 2015 Jeep hack and 1.4 million-vehicle recall",term:"Uconnect Access or SiriusXM Guardian",
+strip:[[1996,2012,"Q","Uconnect in these years paired with your phone; we found no built-in modem.","M"],[2013,2017,"D","Only 8.4-inch Uconnect touchscreens carried a modem, on Sprint 3G, which has shut down. Smaller radios had none.","M"],[2018,2027,"M","4G connected services are fitted on many trims, usually with the larger touchscreens.","L"]],
+models:{"Grand Cherokee":{r:[[2014,2015,"D",JR]]},"Cherokee":{r:[[2014,2015,"D",JR]]},"Durango":{r:[[2014,2015,"D",JR]]},"1500":{a:["ram 1500"],r:[[2013,2015,"D",JR]]},"2500":{a:["ram 2500"],r:[[2013,2015,"D",JR]]},"3500":{a:["ram 3500"],r:[[2013,2015,"D",JR]]},"Viper":{r:[[2013,2015,"D",JR]]},"200":{a:["chrysler 200"],r:[[2015,2015,"D",JR]]},"300":{a:["chrysler 300"],r:[[2015,2015,"D",JR]]},"Charger":{r:[[2015,2015,"D",JR]]},"Challenger":{r:[[2015,2015,"D",JR]]},"Wrangler":{},"Gladiator":{},"Compass":{},"Renegade":{},"Patriot":{},"Liberty":{},"Wagoneer":{},"Pacifica":{},"Journey":{},"Grand Caravan":{},"Hornet":{},"500":{a:["fiat 500"]}},
+priv:["Texas's 2025 lawsuit against Allstate alleges the insurer bought driving data directly from Chrysler, Dodge, Fiat, Jeep, Maserati and Ram. The case is ongoing."],
+sec:["July 2015: researchers Charlie Miller and Chris Valasek remotely took over a Jeep Cherokee through its Uconnect cellular connection, reaching steering, brakes and transmission. Fiat Chrysler recalled about 1.4 million 2013–2015 vehicles with 8.4-inch screens and blocked the attack on Sprint's network."],
+cut:["Decline connected-services enrolment and switch off data sharing in Uconnect settings.","On 2013–2017 cars, the 3G modem can no longer connect; there's little to gain from removing it."],src:["jeep","tx","tx2"]},
+{id:"vw",name:"Volkswagen",makes:["Volkswagen","VW"],head:"2024 leak exposed 800,000 EV owners' movements",term:"Car-Net",
+strip:[[1996,2013,"Q","Car-Net launched on select 2014 models; earlier VWs have no modem.","H"],[2014,2019,"M","Car-Net on select trims. For 2014: standard on Beetle, CC and Eos, and on Passat, Jetta and Tiguan above base trim. Early units used 3G, now shut down.","M"],[2020,2027,"M","Car-Net is fitted on most models; ID. electric models are connected by design.","L"]],
+models:{"ID.4":{a:["id 4","id4"],r:[[2021,2027,"C","ID. electric models are connected by design for software updates."]]},"ID. Buzz":{a:["id buzz"],r:[[2025,2027,"C","ID. electric models are connected by design for software updates."]]},"Golf":{r:[[2014,2014,"Q","VW's 2014 Car-Net bulletin applies to every model except Golf/GTI, Touareg, Jetta SportWagen and Routan."]]},"GTI":{r:[[2014,2014,"Q","VW's 2014 Car-Net bulletin applies to every model except Golf/GTI, Touareg, Jetta SportWagen and Routan."]]},"Touareg":{r:[[2014,2014,"Q","VW's 2014 Car-Net bulletin excludes the Touareg."]]},"Jetta SportWagen":{a:["sportwagen"],r:[[2014,2014,"Q","VW's 2014 Car-Net bulletin excludes the Jetta SportWagen."]]},"Routan":{r:[[2014,2014,"Q","VW's 2014 Car-Net bulletin excludes the Routan."]]},"Jetta":{},"Passat":{},"Tiguan":{},"Atlas":{},"Beetle":{},"Taos":{},"Arteon":{},"CC":{},"Eos":{}},
+priv:["Mozilla's 2023 review highlighted that VW cars record driver behaviour such as seatbelt use and braking force."],
+sec:["Dec 2024: VW's software unit Cariad left data on about 800,000 electric VW, Audi, Seat and Skoda cars in a misconfigured cloud store for months. For about 460,000, location was precise enough to map daily routines. Most affected cars were in Europe."],
+cut:["Decline Car-Net enrolment and switch off data sharing in the head unit.","For hardware steps, find a write-up for your exact model."],src:["vw14","vwtsb","cariad","moz"]},
+{id:"kia",name:"Kia",makes:["Kia"],head:"2024 flaw let a licence plate unlock and start cars",term:"UVO or Kia Connect",
+strip:[[1996,2013,"Q","No telematics found before 2014.","M"],[2014,2027,"M","Early UVO eServices (from the 2014 Sorento) used your phone's data; later UVO link and Kia Connect put modems in many trims.","L"]],
+models:{"Sorento":{},"Sportage":{},"Optima":{},"K5":{},"Forte":{},"Soul":{},"Telluride":{},"Seltos":{},"Niro":{},"EV6":{a:["ev 6"]},"EV9":{a:["ev 9"]},"Carnival":{},"Sedona":{},"Stinger":{},"Rio":{}},
+priv:["Mozilla's 2023 review found Kia's privacy policy listing “sex life” among data it may collect; Kia said it doesn't collect that."],
+sec:["June 2024: researchers registered a fake dealer account and, from just a licence plate, could locate, unlock, start and honk connected Kias from model years 2014 to 2025 in about 30 seconds. Kia fixed it by mid-August 2024 and said it wasn't exploited."],
+cut:["Cancel Kia Connect and switch off data sharing; on a used car, remove any accounts you don't recognise."],src:["kia","kia2","moz"]},
+{id:"gm",name:"Chevrolet, GMC, Buick, Cadillac",makes:["Chevrolet","Chevy","GMC","Buick","Cadillac"],head:"FTC order after selling driving data to insurers' brokers",term:"OnStar",
+strip:[[1996,2014,"D","OnStar was fitted to many GM vehicles (blue OnStar button on the mirror). The older networks it used have all shut down. No mirror buttons usually means no OnStar.","M"],[2015,2015,"C","GM made OnStar 4G LTE standard on most 2015 models.","H"],[2016,2027,"C","OnStar 4G LTE hardware is standard on nearly every GM vehicle, whether or not you subscribe.","M"]],
+models:{"Camaro":{r:[[2015,2015,"D",GM15]]},"Traverse":{r:[[2015,2015,"D",GM15]]},"City Express":{r:[[2015,2015,"D",GM15]]},"Express":{r:[[2015,2015,"D",GM15]]},"Enclave":{r:[[2015,2015,"D",GM15]]},"Acadia":{r:[[2015,2015,"D",GM15]]},"Savana":{r:[[2015,2015,"D",GM15]]},"Silverado":{},"Sierra":{},"Equinox":{},"Malibu":{},"Tahoe":{},"Suburban":{},"Yukon":{},"Colorado":{},"Canyon":{},"Corvette":{},"Bolt":{},"Blazer":{},"Trax":{},"Cruze":{},"Impala":{},"Spark":{},"Terrain":{},"Encore":{},"Envision":{},"Escalade":{},"XT5":{},"CT5":{},"Lyriq":{}},
+priv:["GM's OnStar Smart Driver feature collected precise location and driving behaviour and sold it to brokers including LexisNexis and Verisk, which supplied insurers. GM shut Smart Driver down in April 2024.","In January 2026 the FTC finalised an order banning GM from giving geolocation and driving-behaviour data to consumer reporting agencies for five years. For 20 years GM must let you opt out of collecting that data (with limited exceptions) and get consent at purchase.","Senators found GM also shared location data from connected cars not enrolled in Smart Driver with other third parties."],
+sec:[],cut:["Ask OnStar to deactivate the unit and use the opt-out the FTC order requires.","Hardware: on many GM models the OnStar module sits in the audio and microphone path, so unplugging it can silence hands-free calls. Research your exact model first."],src:["ftc","wyd","gm4g","gmcar"]},
+{id:"bmw",name:"BMW and MINI",makes:["BMW","MINI"],head:"2015 flaw let a fake cell tower unlock 2.2 million cars",term:"ConnectedDrive or BMW Assist",
+strip:[[1996,2009,"D","Some models had BMW Assist; every US 2G and 3G network has shut down, so any such unit is offline.","L"],[2010,2014,"D","Cars built March 2010 to December 2014 have a ConnectedDrive SIM. BMW says factory 3G units lost all service in February 2022.","M"],[2015,2017,"M","A mix of 3G units (offline since 2022) and newer LTE units.","L"],[2018,2027,"C","Essentially every BMW and MINI carries a ConnectedDrive SIM.","L"]],
+models:{"3 Series":{},"5 Series":{},"X3":{},"X5":{},"X1":{},"i3":{},"i4":{},"iX":{},"Cooper":{},"Countryman":{}},
+priv:["BMW's connected services run through ConnectedDrive; switch off data sharing in the car's privacy settings."],
+sec:["Jan 2015: Germany's ADAC motoring club showed a fake cellular base station could unlock about 2.2 million BMW, MINI and Rolls-Royce cars built 2010–2014. BMW fixed it over the air by adding encryption that hadn't been there."],
+cut:["Switch off ConnectedDrive services and data sharing in the car's settings."],src:["bmw","bmw3g"]},
+{id:"tesla",name:"Tesla",makes:["Tesla"],head:"Mozilla's worst brand; staff shared owners' camera clips",term:"built in on every car",
+strip:[[2012,2027,"C","Every Tesla is connected by design; updates, maps and remote features all run through its modem.","H"]],
+models:{"Model S":{a:["s"],r:[[2012,2015,"M","Model S built before June 2015 shipped with 3G; Tesla offered a paid LTE upgrade. Without it the car connects only over Wi-Fi."]]},"Model 3":{a:["3"]},"Model X":{a:["x"]},"Model Y":{a:["y"]},"Cybertruck":{}},
+priv:["Mozilla ranked Tesla the worst of 25 brands in 2023, failing every one of its privacy criteria.","Reuters reported in 2023 that between 2019 and 2022 groups of Tesla employees shared invasive images and videos from customers' car cameras, and that internal tools could show where recordings were made."],
+sec:[],cut:["A Tesla without connectivity loses navigation, updates and core features; there's no practical way to make one quiet. Review camera and data-sharing settings instead."],src:["moz","tes","tes3g"]},
+{id:"evs",name:"Rivian, Lucid, Polestar",makes:["Rivian","Lucid","Polestar"],head:"Connected by design",term:"built in",
+strip:[[2021,2027,"C","Core features and software updates run over the built-in modem.","M"]],
+models:{},priv:["Review each maker's in-car data-sharing settings."],sec:[],cut:["Disconnecting usually breaks updates and key features; treat these as always connected."],src:[]}
+];
+const OTHER=["Acura","Audi","Genesis","Infiniti","Jaguar","Land Rover","Lincoln","Mercedes-Benz","Mitsubishi","Porsche","Volvo"];
+const FIND=[
+["Ford","Every model",null,2016,"Q","H"],
+["Ford","Everything except Escape, Fusion, F-150 and GT",2017,2017,"Q","H"],
+["Ford","Everything except EcoSport, Escape, Expedition, Explorer, F-150, Fusion and Mustang",2018,2018,"Q","H"],
+["Ford","Fiesta, Focus, Flex, Taurus, Transit and other models not on Ford's 2019 list",2019,2019,"Q","H"],
+["Mazda","Every model",null,2018,"Q","H"],
+["Mazda","Mazda6, CX-3, MX-5 and every model not yet on Mazda's connected list",2019,2023,"Q","H"],
+["Subaru","Every model",null,2015,"Q","H"],
+["Subaru","Starlink-equipped Crosstrek, Forester, Legacy, Impreza",2016,2018,"D","M"],
+["Honda","Every model",null,2017,"Q","M"],
+["Toyota","Every model",null,2009,"Q","M"],
+["Toyota","Corolla, Tacoma, Tundra, RAV4, Yaris, Sequoia and other models not on the Safety Connect list",2010,2017,"Q","H"],
+["Toyota","Safety Connect models: Camry, Prius, Highlander, 4Runner, Sienna, Avalon, Land Cruiser and others",2010,2019,"D","H"],
+["Hyundai","Every model",null,2011,"Q","H"],
+["Hyundai","Models with Blue Link",2012,2018,"D","M"],
+["Kia","Every model",null,2013,"Q","M"],
+["Nissan","Every model except Leaf",null,2015,"Q","M"],
+["Nissan","Altima, Maxima, Rogue, Rogue Sport, Murano, Pathfinder, GT-R (listed years)",2016,2018,"D","H"],
+["Jeep, Ram, Dodge, Chrysler","Every model",null,2012,"Q","M"],
+["Jeep, Ram, Dodge, Chrysler","Cars without the 8.4-inch Uconnect touchscreen",2013,2017,"Q","M"],
+["Jeep, Ram, Dodge, Chrysler","Cars with the 8.4-inch Uconnect touchscreen",2013,2017,"D","M"],
+["Volkswagen","Every model",null,2013,"Q","H"],
+["Volkswagen","Golf, GTI, Touareg, Jetta SportWagen, Routan",2014,2014,"Q","H"],
+["Chevrolet, GMC, Buick, Cadillac","Cars with OnStar (mirror buttons)",null,2014,"D","M"],
+["Chevrolet, GMC, Buick, Cadillac","Cars without OnStar mirror buttons",null,2014,"Q","M"],
+["Chevrolet, GMC, Buick, Cadillac","Camaro, Traverse, Express, City Express, Enclave, Acadia, Savana",2015,2015,"D","H"],
+["Lexus","Connected models",null,2018,"D","M"],
+["BMW and MINI","Cars with ConnectedDrive",null,2014,"D","M"]
+];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm=s=>String(s||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+const brandOf=m=>B.find(b=>b.makes.some(x=>x.toLowerCase()===String(m).toLowerCase()));
+const seg=(b,y)=>b.strip.find(s=>y>=s[0]&&y<=s[1]);
+function matchModel(b,txt){
+  const t=norm(txt);if(!t)return null;let best=null,len=0;
+  for(const [k,v] of Object.entries(b.models)){
+    for(const a of [norm(k),...(v.a||[]).map(norm)]){
+      if((t===a||t.startsWith(a+" "))&&a.length>len){best=k;len=a.length}
+    }
+  }
+  return best;
+}
+function evaluate(make,modelTxt,y){
+  const b=brandOf(make);
+  if(!b)return{s:"N",n:"",c:"",b:null,mk:null};
+  const mk=matchModel(b,modelTxt);
+  const r=mk&&(b.models[mk].r||[]).find(x=>y>=x[0]&&y<=x[1]);
+  const g=seg(b,y);
+  if(r)return{s:r[2],n:r[3],c:"H",b,mk};
+  if(!g)return{s:"N",n:"Outside the years we cover for this brand.",c:"L",b,mk};
+  if(mk&&g[5])return{s:g[5][0],n:g[5][1],c:g[4],b,mk};
+  return{s:g[2],n:g[3],c:mk?g[4]:(g[4]==="H"?"M":"L"),b,mk,unmatched:!!norm(modelTxt)&&!mk};
+}
+const srcLinks=ids=>ids.map(i=>`<a href="${SRC[i][1]}">${esc(SRC[i][0])}</a>`).join("; ");
+function render(make,modelTxt,y,fresh){
+  const r=evaluate(make,modelTxt,y),b=r.b,el=$("#sticker");
+  const name=[y,make,modelTxt||r.mk].filter(Boolean).join(" ");
+  let rows="";
+  if(r.s==="N"&&!b){
+    rows=`<div class="row"><b>Status</b><div><p>We haven't researched ${esc(make)} yet.</p><p>Rule of thumb: almost every major brand fitted modems somewhere between 2014 and 2020, and every US 2G and 3G network shut down in 2022, so any older module can no longer connect. Use the checklist below on the car itself.</p></div></div>`;
+  }else{
+    rows+=`<div class="row"><b>Why</b><div><p>${esc(r.n)}</p>${r.unmatched?`<p class="small">We didn't recognise “${esc(modelTxt)}”, so this is the brand-wide answer for ${y}.</p>`:""}</div></div>`;
+    rows+=`<div class="row"><b>What it means</b><div><p>${MEAN[r.s]}</p></div></div>`;
+    rows+=`<div class="row"><b>Maker's data record</b><div>${b.priv.map(p=>`<p>${esc(p)}</p>`).join("")}</div></div>`;
+    rows+=`<div class="row"><b>Security record</b><div>${b.sec.length?b.sec.map(p=>`<p>${esc(p)}</p>`).join(""):"<p>No major remote-access flaw or data exposure found in our research.</p>"}</div></div>`;
+    if(r.s!=="Q")rows+=`<div class="row"><b>Cutting the line</b><div><ul>${b.cut.map(p=>`<li>${esc(p)}</li>`).join("")}</ul><p class="small" style="margin-top:6px"><a href="#disconnect">Compare all methods</a></p></div></div>`;
+    rows+=`<div class="row"><b>Warranty</b><div><p>${WAR[r.s]} <a href="#warranty">Details</a></p></div></div>`;
+    rows+=`<div class="row"><b>Confirm on the car</b><div><p>Look for an SOS or assist button overhead, “${esc(b.term)}” on the window sticker, or a connectivity menu in settings.</p></div></div>`;
+    rows+=`<div class="row"><b>Confidence</b><div><p><span class="conf">${CONF[r.c]}</span>${CN[r.c]}</p>${b.src.length?`<p class="small">Sources: ${srcLinks(b.src)}</p>`:""}</div></div>`;
+  }
+  el.innerHTML=`<div class="sh"><span>Privacy label</span><span>US market</span></div>
+  <div class="verdict"><div class="glyph s-${r.s}" aria-hidden="true"></div><div><div class="big">${ST[r.s]}</div><div class="car">${esc(name)}</div></div></div>${rows}`;
+  if(fresh){el.classList.remove("fresh");void el.offsetWidth;el.classList.add("fresh")}
+  try{localStorage.setItem("qc",JSON.stringify([make,modelTxt,y]))}catch(e){}
+}
+const makes=[...B.flatMap(b=>b.makes)].sort((a,b)=>a.localeCompare(b));
+$("#make").innerHTML=`<optgroup label="Researched">${makes.map(m=>`<option>${esc(m)}</option>`).join("")}</optgroup><optgroup label="Not yet researched">${OTHER.map(m=>`<option>${esc(m)}</option>`).join("")}</optgroup>`;
+const yrs=[];for(let y=Y1;y>=1996;y--)yrs.push(y);
+$("#year").innerHTML=yrs.map(y=>`<option>${y}</option>`).join("");
+function fillModels(){const b=brandOf($("#make").value);$("#models").innerHTML=b?Object.keys(b.models).map(m=>`<option value="${esc(m)}">`).join(""):""}
+$("#make").addEventListener("change",()=>{$("#model").value="";fillModels()});
+function set(mk,md,y){$("#make").value=mk;fillModels();$("#model").value=md;$("#year").value=y}
+$("#form").addEventListener("submit",e=>{e.preventDefault();render($("#make").value,$("#model").value.trim(),+$("#year").value,true);if(innerWidth<900)$("#sticker").scrollIntoView({behavior:"smooth"})});
+const EX=[["Ford","F-150",2016],["Mazda","CX-5",2020],["Toyota","Camry",2017],["Subaru","Outback",2015],["Chevrolet","Silverado",2019],["Honda","Accord",2023]];
+$("#ex").innerHTML=EX.map((e,i)=>`<button type="button" data-i="${i}">${e[2]} ${e[0]} ${e[1]}</button>`).join("");
+$("#ex").addEventListener("click",e=>{const t=e.target.closest("button");if(!t)return;const x=EX[+t.dataset.i];set(...x);render(...x,true);if(innerWidth<900)$("#sticker").scrollIntoView({behavior:"smooth"})});
+let start=EX[0];try{const s=JSON.parse(localStorage.getItem("qc")||"null");if(Array.isArray(s)&&s.length===3)start=s}catch(e){}
+set(start[0],start[1],start[2]);render(start[0],start[1],+start[2],false);
+const years=[];for(let y=Y0;y<=Y1;y++)years.push(y);
+const cell=(b,y)=>{const g=seg(b,y);return g?g[2]:"N"};
+$("#strips").innerHTML=B.map(b=>`<div class="sr"><div class="n">${esc(b.name)}</div>${years.map(y=>{const g=seg(b,y);return`<div class="c s-${cell(b,y)}" data-b="${b.id}" data-y="${y}" title="${esc(b.name+" "+y+": "+(g?ST[g[2]]+". "+g[3]:"No vehicles"))}"></div>`}).join("")}</div>`).join("")+
+`<div class="sr ax"><div class="n"></div>${years.map(y=>`<span class="${y%4===0?"":"e2"}">${y%2===0?"’"+String(y).slice(2):""}</span>`).join("")}</div>`;
+$("#strips").addEventListener("click",e=>{const c=e.target.closest(".c");if(!c)return;const b=B.find(x=>x.id===c.dataset.b);if(!seg(b,+c.dataset.y))return;set(b.makes[0],"",c.dataset.y);render(b.makes[0],"",+c.dataset.y,true);$("#lookup").scrollIntoView({behavior:"smooth"})});
+$("#fy").innerHTML=yrs.filter(y=>y<=2023).map(y=>`<option${y===2016?" selected":""}>${y}</option>`).join("");
+function finder(){
+  const y=+$("#fy").value,dead=$("#fd").checked;
+  const rows=FIND.filter(f=>(f[2]===null||y>=f[2])&&y<=f[3]&&(dead||f[4]==="Q"));
+  $("#ft tbody").innerHTML=rows.map(f=>`<tr><td data-l="Brand"><b>${esc(f[0])}</b></td><td data-l="Models">${esc(f[1])}</td><td data-l="Years" class="nw">${f[2]===null?"Up to "+f[3]:f[2]===f[3]?f[2]:f[2]+"–"+f[3]}</td><td data-l="Status"><span class="tag"><i class="s-${f[4]}"></i>${f[4]==="Q"?"No modem":"Dead network"}</span></td><td data-l="Confidence">${CONF[f[5]]}</td></tr>`).join("")||`<tr><td colspan="5">Nothing in our data for ${y}. By then most researched brands fitted live modems to at least some trims; try the lookup for a specific car.</td></tr>`;
+  $("#fcount").textContent=rows.length?`${rows.length} ${rows.length===1?"entry":"entries"} for model year ${y}. Ranges marked “up to” start at the earliest years we cover.`:"";
+}
+$("#fy").addEventListener("change",finder);$("#fd").addEventListener("change",finder);finder();
+$("#bf").innerHTML=B.map(b=>`<details class="bf"><summary><span class="bn">${esc(b.name)}</span><span class="bh">${esc(b.head)}</span></summary><div class="bb">
+<div class="mini" aria-hidden="true">${years.map(y=>`<i class="s-${cell(b,y)}"></i>`).join("")}</div><p class="small" style="margin:4px 0 0">${Y0}–${Y1}</p>
+<h4>Modem timeline</h4><ul>${b.strip.map(s=>`<li><b>${s[0]===s[1]?s[0]:(s[0]<=1996?"Up to "+s[1]:s[0]+"–"+s[1])}:</b> ${esc(s[3])}</li>`).join("")}</ul>
+<h4>Data sharing</h4><ul>${b.priv.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>
+<h4>Security incidents</h4><ul>${b.sec.length?b.sec.map(p=>`<li>${esc(p)}</li>`).join(""):"<li>None major found in our research.</li>"}</ul>
+<h4>Turning it off</h4><ul>${b.cut.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>
+${b.src.length?`<h4>Sources</h4><p class="small">${srcLinks(b.src)}</p>`:""}</div></details>`).join("");
+$("#srcs").innerHTML=Object.values(SRC).map(s=>`<li><a href="${s[1]}">${esc(s[0])}</a></li>`).join("");
+}
+</script>
+</body>
+</html>
